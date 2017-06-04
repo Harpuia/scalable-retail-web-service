@@ -1,0 +1,58 @@
+{
+  "config": {
+    "target": "http://localhost:4000",
+    "phases": [
+      {"duration": 10, "arrivalCount": 1}
+    ]
+  },
+  "scenarios": [
+    {
+      "name": "Basic tests for project 1",
+      "flow": [
+        {"post": {
+          "url": "/login",
+          "json": {"username":"hsmith","password":"smith"},
+          "match":{
+            "json":"$.message",
+            "value":"Welcome Henry"
+          }
+         }
+       },
+       {"post": {
+         "url": "/add",
+         "json": {"num1":4,"num2":9},
+         "match":{
+           "json":"$.message",
+           "value":"The action was successful"
+         },
+         "match":{
+           "json":"$.result",
+           "value":13
+         }
+        }
+      },
+      {"post": {
+        "url": "/divide",
+        "json": {"num1":8,"num2":2},
+        "match":{
+          "json":"$.message",
+          "value":"The action was successful"
+        },
+        "match":{
+          "json":"$.result",
+          "value":4
+        }
+       }
+      },
+      {"post": {
+        "url": "/logout",
+        "match":{
+          "json":"$.message",
+          "value":"You have been successfully logged out"
+        }
+       }
+      }
+     ]
+    }
+  ]
+}
