@@ -1,0 +1,26 @@
+{
+  "name": "simple_amazon",
+  "version": "1.0.0",
+  "description": "A simple e-commerce web system implementation",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harpuia/SimpleAmazon.git"
+  },
+  "author": "Yuchao Zhou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harpuia/SimpleAmazon/issues"
+  },
+  "homepage": "https://github.com/Harpuia/SimpleAmazon#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "mysql": "^2.13.0",
+    "nodemon": "^1.11.0"
+  }
+}
