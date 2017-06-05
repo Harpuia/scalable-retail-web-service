@@ -5,6 +5,8 @@ var jsonParser = bodyParser.json();
 var mysql = require('mysql');
 var sess;
 
+
+
 router.post("/login", jsonParser, function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -28,7 +30,7 @@ router.post("/login", jsonParser, function (req, res) {
             if (err) throw err;
             
             if (typeof result !== 'undefined' && result.length > 0) {
-                var welcomeMessage = "Welcome" + result[0].firstname;
+                var welcomeMessage = "Welcome " + result[0].firstname;
                 res.json ({
                     message: welcomeMessage
                 });
@@ -40,17 +42,92 @@ router.post("/login", jsonParser, function (req, res) {
 });
 
 router.post("/logout", function (req, res) {
-    req.session.destroy (function(err) {
-        if (err) {
+    sess = req.session;
+    if (sess.username) {
+        req.session.destroy (function(err) {
+            if (err) {
+                throw err;
+            } else {
+                res.json ({
+                    message: "You have been successfully logged out"
+                });
+            }
+        });
+    } else {
+        res.json ({
+            message: "You are not currently logged in"
+        });
+    }
+});
+
+router.post("/add", jsonParser, function (req, res) {
+    sess = req.session;
+    if (sess.username) {
+        var num1 = req.body.num1;
+        var num2 = req.body.num2;
+        if (isInteger(num1) && isInteger(num2)) {
             res.json ({
-                message: "You are not currently logged in"
+                message: "The action was successful",
+                result: num1 + num2
             });
         } else {
             res.json ({
-                message: "You have been successfully logged out"
+                message: "The numbers you entered are not valid"
             });
         }
-    });
+    } else {
+        res.json ({
+            message: "You are not currently logged in"
+        });
+    }
 });
+
+router.post("/divide", jsonParser, function (req, res) {
+    sess = req.session;
+    if (sess.username) {
+        var num1 = req.body.num1;
+        var num2 = req.body.num2;
+        if (isInteger(num1) && isInteger(num2) && num2 != 0) {
+            res.json ({
+                message: "The action was successful",
+                result: num1 / num2
+            });
+        } else {
+            res.json ({
+                message: "The numbers you entered are not valid"
+            });
+        }
+    } else {
+        res.json ({
+            message: "You are not currently logged in"
+        });
+    }
+});
+
+router.post("/multiply", jsonParser, function (req, res) {
+    sess = req.session;
+    if (sess.username) {
+        var num1 = req.body.num1;
+        var num2 = req.body.num2;
+        if (isInteger(num1) && isInteger(num2)) {
+            res.json ({
+                message: "The action was successful",
+                result: num1 * num2
+            });
+        } else {
+            res.json ({
+                message: "The numbers you entered are not valid"
+            });
+        }
+    } else {
+        res.json ({
+            message: "You are not currently logged in"
+        });
+    }
+});
+
+function isInteger(x) {
+    return (typeof x === 'number') && (x % 1 === 0);
+};
 
 module.exports = router;
