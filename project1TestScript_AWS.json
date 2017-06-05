@@ -1,6 +1,6 @@
 {
   "config": {
-    "target": "ec2-54-173-255-44.compute-1.amazonaws.com:4000",
+    "target": "http://ec2-54-173-255-44.compute-1.amazonaws.com:4000",
     "phases": [
       {"duration": 10, "arrivalCount": 1}
     ]
