@@ -17,9 +17,9 @@ router.post("/login", jsonParser, function (req, res) {
     };
 
     var con = mysql.createConnection({
-        host: "localhost",
+        host: "simpleamazon.cektrjgecscm.us-east-1.rds.amazonaws.com",
         user: "root",
-        password: "",
+        password: "ediss_is_awesome",
         database: "e_commerce"
     });
 
