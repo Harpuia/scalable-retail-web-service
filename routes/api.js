@@ -17,6 +17,10 @@ router.post("/login", jsonParser, function (req, res) {
     };
 
     var con = mysql.createConnection({
+        // Uncomment the following host if you've deployed the MySQL server locally.
+        // host: "localhost",
+
+        // When using MySQL instance deployed on AWS RDS service.
         host: "simpleamazon.cektrjgecscm.us-east-1.rds.amazonaws.com",
         user: "root",
         password: "ediss_is_awesome",
