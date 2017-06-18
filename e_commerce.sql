@@ -45,8 +45,15 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `products` (
-  `asin` varchar(50) DEFAULT NULL,
+  `asin` varchar(50) NOT NULL,
   `productName` varchar(50) DEFAULT NULL,
   `productDescription` varchar(500) DEFAULT NULL,
   `group` varchar(50) DEFAULT NULL,
@@ -60,7 +67,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('Jenny','Admin','jadmin','admin');
+INSERT INTO `users` VALUES ('Jenny','Admin','','','','','','jadmin','admin', 'admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
