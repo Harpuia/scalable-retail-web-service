@@ -1,13 +1,14 @@
 var mysql = require('mysql');
 
-var localConnection = mysql.createConnection({
+var localConnection = mysql.createPool({
+    connectionLimit: 10000,
     host: "localhost",
     user: "root",
     password: "",
     database: "e_commerce"
 });
 
-var awsConnection = mysql.createConnection({
+var awsConnection = mysql.createPool({
     // When using MySQL instance deployed on AWS RDS service.
     host: "simpleamazon.cektrjgecscm.us-east-1.rds.amazonaws.com",
     user: "root",
@@ -16,6 +17,6 @@ var awsConnection = mysql.createConnection({
 });
 
 module.exports = {
-    localCon: localCon,
+    localConnection: localConnection,
     awsConnection: awsConnection
 };
