@@ -56,7 +56,7 @@ CREATE TABLE `products` (
   `asin` varchar(50) NOT NULL,
   `productName` varchar(50) DEFAULT NULL,
   `productDescription` varchar(500) DEFAULT NULL,
-  `group` varchar(50) DEFAULT NULL,
+  `pgroup` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`asin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

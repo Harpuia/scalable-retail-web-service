@@ -10,7 +10,7 @@ var localConnection = mysql.createPool({
 
 var awsConnection = mysql.createPool({
     // When using MySQL instance deployed on AWS RDS service.
-    host: "simpleamazon.cektrjgecscm.us-east-1.rds.amazonaws.com",
+    host: "ediss-db.cektrjgecscm.us-east-1.rds.amazonaws.com",
     user: "root",
     password: "ediss_is_awesome",
     database: "e_commerce"
