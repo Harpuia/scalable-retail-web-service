@@ -4,8 +4,8 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var mysql = require('mysql');
 var model = require('../models/model');
-var localDB = model.localConnection;
-var awsRDS = model.awsConnection;
+var localDB = model.awsConnection;
+//var awsRDS = model.awsConnection;
 var utility = require('../utility/utility');
 var sess;
 
