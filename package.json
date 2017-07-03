@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/Harpuia/SimpleAmazon#readme",
   "dependencies": {
+    "async": "^2.5.0",
     "body-parser": "^1.17.2",
+    "connect-redis": "^3.3.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "express-mysql-session": "^1.2.1",
     "express-session": "^1.15.3",
     "mysql": "^2.13.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "redis": "^2.7.1"
   }
 }

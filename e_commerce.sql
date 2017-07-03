@@ -46,6 +46,22 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `user_status`
+--
+
+CREATE TABLE IF NOT EXISTS `user_status` (
+  `username` varchar(255) NOT NULL,
+  `user_status` TEXT NOT NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX `username` (`username` ASC),
+  CONSTRAINT `user_status_ibfk_1`
+    FOREIGN KEY (`username`)
+    REFERENCES `users` (`username`)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+--
 -- Table structure for table `products`
 --
 
