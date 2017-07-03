@@ -26,6 +26,7 @@ var awsOptions = {
   // When using MySQL instance deployed on AWS RDS service.
   host: "ediss-db.cektrjgecscm.us-east-1.rds.amazonaws.com",
   user: "root",
+  port: 3306,
   password: "ediss_is_awesome",
   database: "e_commerce",
   /*
