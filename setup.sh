@@ -9,4 +9,4 @@ redis-server &
 git clone https://Harpuia@github.com/Harpuia/SimpleAmazon.git
 cd SimpleAmazon
 npm install
-nodemon server.js
+nodejs server.js
