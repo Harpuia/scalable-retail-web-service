@@ -24,6 +24,7 @@ var localOptions = {
 
 var awsOptions = {
   // When using MySQL instance deployed on AWS RDS service.
+  connectionLimit: 10000,
   host: "ediss-db.cektrjgecscm.us-east-1.rds.amazonaws.com",
   user: "root",
   password: "ediss_is_awesome",
