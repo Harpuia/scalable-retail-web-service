@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var mysql = require('mysql');
 var model = require('../models/model');
-var localDB = model.awsConnection;
+var localDB = model.localConnection;
 //var awsRDS = model.awsConnection;
 var utility = require('../utility/utility');
 var sess;
@@ -328,90 +328,79 @@ router.post("/viewUsers", jsonParser, function (req, res) {
 });
 
 router.post("/viewProducts", jsonParser, function (req, res) {
-    sess = req.session;
-    if (sess.username && sess.role == "admin") {
-        var asin = req.body.asin;
-        var keyword = req.body.keyword;
-        var pgroup = req.body.group;
-        
-        if (typeof keyword == 'undefined' || keyword.length == 0) {
-            keyword = "'%'";
-        } else {
-            keyword = "'%" + keyword + "%'";
-        }
+    var asin = req.body.asin;
+    var keyword = req.body.keyword;
+    var pgroup = req.body.group;
 
-        if (typeof pgroup == 'undefined' || pgroup.length == 0) {
-            pgroup = "'%'";
-        } else {
-            pgroup = "'%" + pgroup + "%'";
-        }
-        
-        localDB.getConnection(function (err, conn) {
-            if (err) throw err;
-            if (typeof asin != 'undefined' && asin != "") {
-                var query = "SELECT * FROM products WHERE asin = " + asin + "";
-                conn.query(query, function (err, result) {
-                    if (err) {
-                        throw (err);
-                    } else {
-                        if (typeof result !== 'undefined' && result.length > 0) {
-                            var products = [];
-                            for (var i = 0; i < result.length; i++) {
-                                var resultAsin = result[i].asin;
-                                var resultProductName = result[i].productName;
-                                var product = {
-                                    asin: resultAsin,
-                                    productName: resultProductName
-                                };
-                                products.push(product);
-                            }
-                            res.json({
-                                product: products
-                            });
-                        } else {
-                            res.json({
-                                message: "There are no products that match that criteria"
-                            });
-                        }
-                    }
-                });
-            } else {
-                conn.query('SELECT * from products where pgroup like ' + pgroup + ' and (productName LIKE ' + keyword + ' OR productDescription LIKE ' + keyword + ')', function (err, result) {
-                    if (err) {
-                        throw (err);
-                    } else {
-                        if (typeof result !== 'undefined' && result.length > 0) {
-                            var products = [];
-                            for (var i = 0; i < result.length; i++) {
-                                var resultAsin = result[i].asin;
-                                var resultProductName = result[i].productName;
-                                var product = {
-                                    asin: resultAsin,
-                                    productName: resultProductName
-                                };
-                                products.push(product);
-                            }
-                            res.json({
-                                product: products
-                            });
-                        } else {
-                            res.json({
-                                message: "There are no products that match that criteria"
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    } else if (sess.username && sess.role == "customer") {
-        res.json({
-            message: "You must be an admin to perform this action"
-        });
+    if (typeof keyword == 'undefined' || keyword.length == 0) {
+        keyword = "'%'";
     } else {
-        res.json({
-            message: "You are not currently logged in"
-        });
+        keyword = "'%" + keyword + "%'";
     }
+
+    if (typeof pgroup == 'undefined' || pgroup.length == 0) {
+        pgroup = "'%'";
+    } else {
+        pgroup = "'%" + pgroup + "%'";
+    }
+
+    localDB.getConnection(function (err, conn) {
+        if (err) throw err;
+        if (typeof asin != 'undefined' && asin != "") {
+            var query = "SELECT * FROM products WHERE asin = " + asin + "";
+            conn.query(query, function (err, result) {
+                if (err) {
+                    throw (err);
+                } else {
+                    if (typeof result !== 'undefined' && result.length > 0) {
+                        var products = [];
+                        for (var i = 0; i < result.length; i++) {
+                            var resultAsin = result[i].asin;
+                            var resultProductName = result[i].productName;
+                            var product = {
+                                asin: resultAsin,
+                                productName: resultProductName
+                            };
+                            products.push(product);
+                        }
+                        res.json({
+                            product: products
+                        });
+                    } else {
+                        res.json({
+                            message: "There are no products that match that criteria"
+                        });
+                    }
+                }
+            });
+        } else {
+            conn.query('SELECT * from products where pgroup like ' + pgroup + ' and (productName LIKE ' + keyword + ' OR productDescription LIKE ' + keyword + ')', function (err, result) {
+                if (err) {
+                    throw (err);
+                } else {
+                    if (typeof result !== 'undefined' && result.length > 0) {
+                        var products = [];
+                        for (var i = 0; i < result.length; i++) {
+                            var resultAsin = result[i].asin;
+                            var resultProductName = result[i].productName;
+                            var product = {
+                                asin: resultAsin,
+                                productName: resultProductName
+                            };
+                            products.push(product);
+                        }
+                        res.json({
+                            product: products
+                        });
+                    } else {
+                        res.json({
+                            message: "There are no products that match that criteria"
+                        });
+                    }
+                }
+            });
+        }
+    });
 });
 
 function isInteger(x) {

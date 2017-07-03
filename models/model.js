@@ -4,7 +4,7 @@ var localConnection = mysql.createPool({
     connectionLimit: 10000,
     host: "localhost",
     user: "root",
-    password: "",
+    password: "root",
     database: "e_commerce"
 });
 

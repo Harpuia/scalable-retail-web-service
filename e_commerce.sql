@@ -36,7 +36,7 @@ CREATE TABLE `users` (
   `address` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
-  `zip` varchar(5) DEFAULT NULL,
+  `zip` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
