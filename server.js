@@ -17,7 +17,7 @@ app.use(
     //store: model.localSession,
     store: new redisStore({
       //host: "localhost",
-      host: "ec2-34-205-182-99.compute-1.amazonaws.com",
+      host: "cache.al5fdm.ng.0001.use1.cache.amazonaws.com",
       port: 6379,
       client: client,
       ttl: 260
