@@ -38,12 +38,19 @@ router.post("/registerUser", jsonParser, function (req, res) {
   }
 
   localDB.getConnection(function (err, conn) {
-    if (err) throw err;
+    if (err) {
+      conn.release();
+      throw err;
+    }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username);
     conn.query(sql, function (err, result) {
-      if (err) throw err;
+      if (err) {
+        conn.release();
+        next(err);
+      }
 
       if (typeof result !== 'undefined' && result.length > 0) {
+        conn.release();
         res.json(failureRes);
       } else {
         sql = "INSERT INTO `users` (`fname`, `lname`, `address`, `city`, `state`, `zip`, `email`, `username`, `password`, `role`) VALUES (" +
@@ -72,10 +79,16 @@ router.post("/login", jsonParser, function (req, res) {
   };
 
   localDB.getConnection(function (err, conn) {
-    if (err) throw err;
+    if (err) {
+      conn.release();
+      throw err;
+    }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username) + " AND password = " + mysql.escape(password);
     conn.query(sql, function (err, result) {
-      if (err) throw err;
+      conn.release();
+      if (err) {
+        throw err;
+      }
 
       if (typeof result !== 'undefined' && result.length > 0) {
         var welcomeMessage = "Welcome " + result[0].fname;
@@ -189,12 +202,20 @@ router.post("/addProducts", jsonParser, function (req, res) {
     }
 
     localDB.getConnection(function (err, conn) {
-      if (err) throw err;
+      if (err) {
+        conn.release();
+        throw err;
+      }
+
       var sql = "SELECT * FROM products WHERE asin = " + mysql.escape(asin);
       conn.query(sql, function (err, result) {
-        if (err) throw err;
+        if (err) {
+          conn.release();
+          throw err;
+        }
 
         if (typeof result !== 'undefined' && result.length > 0) {
+          conn.release();
           res.json(failureRes);
         } else {
           sql = "INSERT INTO `products` (`asin`, `productName`, `productDescription`, `pgroup`) VALUES (" +
@@ -240,7 +261,10 @@ router.post("/modifyProduct", jsonParser, function (req, res) {
     }
 
     localDB.getConnection(function (err, conn) {
-      if (err) throw err;
+      if (err) {
+        conn.release();
+        throw err;
+      }
 
       var value_set =
         utility.sql_set_value(conn, "asin", asin) + "," +
@@ -278,7 +302,11 @@ router.post("/viewUsers", jsonParser, function (req, res) {
     var firstname = req.body.fname;
     var lastname = req.body.lname;
     localDB.getConnection(function (err, conn) {
-      if (err) throw err;
+      if (err) {
+        conn.release();
+        throw err;
+      }
+
       var sql = "SELECT * FROM users WHERE fname LIKE ";
 
       if (typeof firstname == 'undefined' || firstname.length == 0) {
@@ -353,10 +381,15 @@ router.post("/viewProducts", jsonParser, function (req, res) {
   }
 
   localDB.getConnection(function (err, conn) {
-    if (err) throw err;
+    if (err) {
+      conn.release();
+      throw err;
+    }
+
     if (typeof asin != 'undefined' && asin != "") {
       var query = "SELECT * FROM products WHERE asin = " + asin + "";
       conn.query(query, function (err, result) {
+        conn.release();
         if (err) {
           throw (err);
         } else {
@@ -383,6 +416,7 @@ router.post("/viewProducts", jsonParser, function (req, res) {
       });
     } else {
       conn.query('SELECT * from products where pgroup like ' + pgroup + ' and (productName LIKE ' + keyword + ' OR productDescription LIKE ' + keyword + ')', function (err, result) {
+        conn.release();
         if (err) {
           throw (err);
         } else {

@@ -2,7 +2,7 @@
   "config": {
     "target": "http://127.0.0.1:4000",
     "phases": [
-      {"duration": 20, "arrivalCount": 20}
+      {"duration": 10, "arrivalCount": 30}
     ],
     "payload": [
     {

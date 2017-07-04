@@ -2,7 +2,7 @@
   "config": {
     "target": "http://ec2-34-205-182-99.compute-1.amazonaws.com:4000",
     "phases": [
-      {"duration": 20, "arrivalCount": 20}
+      {"duration": 10, "arrivalCount": 30}
     ],
     "payload": [
     {
