@@ -70,9 +70,9 @@ DROP TABLE IF EXISTS `products`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `products` (
   `asin` varchar(50) NOT NULL,
-  `productName` varchar(50) DEFAULT NULL,
-  `productDescription` varchar(500) DEFAULT NULL,
-  `pgroup` varchar(50) DEFAULT NULL,
+  `productName` varchar(2040) DEFAULT NULL,
+  `productDescription` varchar(5050) DEFAULT NULL,
+  `pgroup` varchar(5050) DEFAULT NULL,
   PRIMARY KEY (`asin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -86,6 +86,27 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES ('Jenny','Admin','','','','','','jadmin','admin', 'admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `orders` (
+  `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `asin` varchar(50) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `recommendations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `recommendations` (
+  `bought` varchar(50) NOT NULL,
+  `alsobought` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

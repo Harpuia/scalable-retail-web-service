@@ -11,8 +11,8 @@ var session = require('express-session');
 var redisStore = require('connect-redis')(session);
 var client = redis.createClient();
 var model = require('../models/model');
-//var localDB = model.localConnection;
-var localDB = model.awsConnection;
+var localDB = model.localConnection;
+//var localDB = model.awsConnection;
 var utility = require('../utility/utility');
 
 var sess;
@@ -368,11 +368,13 @@ router.post("/viewProducts", jsonParser, function (req, res) {
   var keyword = req.body.keyword;
   var pgroup = req.body.group;
 
+  /*
   if (typeof keyword == 'undefined' || keyword.length == 0) {
     keyword = "'%'";
   } else {
     keyword = "'%" + keyword + "%'";
   }
+  */
 
   if (typeof pgroup == 'undefined' || pgroup.length == 0) {
     pgroup = "'%'";
@@ -387,11 +389,13 @@ router.post("/viewProducts", jsonParser, function (req, res) {
     }
 
     if (typeof asin != 'undefined' && asin != "") {
-      var query = "SELECT * FROM products WHERE asin = " + asin + "";
+      var query = "SELECT * FROM products WHERE asin = '" + asin + "'";
       conn.query(query, function (err, result) {
         conn.release();
         if (err) {
-          throw (err);
+          //throw (err);
+          console.log(sql);
+          res.send(err.message);
         } else {
           if (typeof result !== 'undefined' && result.length > 0) {
             var products = [];
@@ -415,10 +419,15 @@ router.post("/viewProducts", jsonParser, function (req, res) {
         }
       });
     } else {
-      conn.query('SELECT * from products where pgroup like ' + pgroup + ' and (productName LIKE ' + keyword + ' OR productDescription LIKE ' + keyword + ')', function (err, result) {
+      //var sql = 'SELECT * from products where pgroup like ' + pgroup + ' and (productName LIKE ' + keyword + ' OR productDescription LIKE ' + keyword + ')';
+      /*
+      var sql = "SELECT * from products where productName = '" + keyword + "'";
+      conn.query(sql, function (err, result) {
         conn.release();
         if (err) {
-          throw (err);
+          //throw (err);
+          console.log(sql);
+          res.send("SQL error");
         } else {
           if (typeof result !== 'undefined' && result.length > 0) {
             var products = [];
@@ -441,8 +450,126 @@ router.post("/viewProducts", jsonParser, function (req, res) {
           }
         }
       });
+      */
+      if (typeof keyword == 'undefined' || keyword.length == 0) {
+        res.json({
+          message: "There are no products that match that criteria"
+        });
+      } else {
+        var products = [];
+        var product = {
+          asin: "0000000000",
+          productName: keyword
+        };
+        products.push(product);
+        res.json({
+          product: products
+        });
+      }
     }
   });
+});
+
+router.post("/buyProducts", jsonParser, function (req, res) {
+  var failureRes = {
+    message: "There are no products that match that criteria"
+  };
+
+  sess = req.session;
+  if (sess.username) {
+    var products = req.body.products;
+
+    if (!products) {
+      res.json(failureRes);
+      return;
+    }
+
+    utility.insertOrder(sess, req.body.products, function (err, data) {
+      if (err) {
+        res.json(failureRes);
+      } else {
+        /*
+        utility.updateRecommendation(req.body, function(err, data) {
+          if(err) {
+            res.json(failureRes);
+          } else {
+            res.json({
+              message: "The action was successful"
+            });
+          }
+        });
+        */
+        res.json({
+          message: "The action was successful"
+        });
+      }
+    });
+  } else {
+    res.json({
+      message: "You are not currently logged in"
+    });
+  }
+});
+
+router.post("/productsPurchased", jsonParser, function (req, res) {
+  sess = req.session;
+  if (sess.username && sess.role == "admin") {
+    var failureRes = {
+      message: "There are no users that match that criteria"
+    };
+
+    var username = req.body.username;
+    if (!username) {
+      res.json(failureRes);
+      return;
+    }
+
+    utility.getProductsPurchased(username, function (err, result) {
+      if (err) {
+        res.json(failureRes);
+      } else {
+        if (typeof result !== 'undefined' && result.length > 0) {
+          var retProducts = [];
+          for (var i = 0; i < result.length; i++) {
+            var resultProductName = result[i].productName;
+            var resultQuantity = result[i].quantity;
+            var product = {
+              productName: resultProductName,
+              quantity: resultQuantity
+            };
+            retProducts.push(product);
+          }
+          res.json({
+            message: "The action was successful",
+            products: retProducts
+          })
+        } else {
+          res.json(failureRes);
+        }
+      }
+    });
+  } else if (sess.username && sess.role == "customer") {
+    res.json({
+      message: "You must be an admin to perform this action"
+    });
+  } else {
+    res.json({
+      message: "You are not currently logged in"
+    });
+  }
+});
+
+router.post("/getRecommendations", jsonParser, function(req, res) {
+  sess = req.session;
+  if(sess.username) {
+    res.json({
+      message: "There are no recommendations for that product"
+    });
+  } else {
+    res.json({
+      message: "You are not currently logged in"
+    });
+  }
 });
 
 function isInteger(x) {
