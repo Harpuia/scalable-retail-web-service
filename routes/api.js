@@ -524,6 +524,7 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
       return;
     }
 
+    /*
     utility.getProductsPurchased(username, function (err, result) {
       if (err) {
         res.json(failureRes);
@@ -548,6 +549,8 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
         }
       }
     });
+    */
+    res.json(failureRes);
   } else if (sess.username && sess.role == "customer") {
     res.json({
       message: "You must be an admin to perform this action"
