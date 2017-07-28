@@ -11,8 +11,8 @@ var session = require('express-session');
 var redisStore = require('connect-redis')(session);
 var client = redis.createClient();
 var model = require('../models/model');
-var localDB = model.localConnection;
-//var localDB = model.awsConnection;
+//var localDB = model.localConnection;
+var localDB = model.awsConnection;
 var utility = require('../utility/utility');
 
 var sess;

@@ -16,8 +16,8 @@ app.use(
     secret: "ssshhhhh",
     //store: model.localSession,
     store: new redisStore({
-      host: "localhost",
-      //host: "cache.al5fdm.ng.0001.use1.cache.amazonaws.com",
+      //host: "localhost",
+      host: "redis.al5fdm.ng.0001.use1.cache.amazonaws.com",
       port: 6379,
       client: client,
       ttl: 260

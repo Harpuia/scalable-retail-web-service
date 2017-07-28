@@ -24,10 +24,12 @@ var lineReader = require('line-reader');
 
 /*************************You need to change this to be appropriate for your system************************************************************/
 var connection = mysql.createConnection({
-  host     : '127.0.0.1',
+  //host     : '127.0.0.1',
+  host: 'ediss-db.cektrjgecscm.us-east-1.rds.amazonaws.com',
   port     : '3306',
   user     : 'root',
-  password : 'root',
+  //password : 'root',
+  password: 'ediss_is_awesome',
   database : 'e_commerce',
   multipleStatements: 'true'
 });
@@ -38,7 +40,7 @@ var values = ""; //The records read from the file.
 var numRecords = 0; //The current number of records read from the file.
 
 /********************************You might need to adjust the block size.  This specifies how many records to insert at once***********************/
-var recordBlock = 100; //The number of records to write at once.
+var recordBlock = 500; //The number of records to write at once.
 
 lineReader.eachLine('./test/Phase4/productRecordsLarge.json', function(line, last) {
   execute = false;
