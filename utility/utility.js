@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var model = require('../models/model');
-var localDB = model.localConnection;
-//var localDB = model.awsConnection;
+//var localDB = model.localConnection;
+var localDB = model.awsConnection;
 
 var sql_set_value = function (conn, field, content) {
   if (content) {
