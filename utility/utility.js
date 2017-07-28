@@ -100,7 +100,8 @@ var getProductsPurchased = function(username, fn) {
       conn.release();
       return;
     }
-    var sql = "select p.productName,count(*) as quantity from orders o, products p where o.username='" + username + "' and o.asin=p.asin group by o.asin";
+    //var sql = "select p.productName,count(*) as quantity from orders o, products p where o.username='" + username + "' and o.asin=p.asin group by o.asin";
+    var sql = "select p.productName from orders o, products p where o.username='" + username + "' and o.asin=p.asin group by o.asin";
     //console.log(sql);
     conn.query(sql, function(err, result) {
       conn.release();

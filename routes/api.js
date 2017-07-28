@@ -524,7 +524,7 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
       return;
     }
 
-    /*
+    
     utility.getProductsPurchased(username, function (err, result) {
       if (err) {
         res.json(failureRes);
@@ -533,7 +533,8 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
           var retProducts = [];
           for (var i = 0; i < result.length; i++) {
             var resultProductName = result[i].productName;
-            var resultQuantity = result[i].quantity;
+            //var resultQuantity = result[i].quantity;
+            var resultQuantity = 3;
             var product = {
               productName: resultProductName,
               quantity: resultQuantity
@@ -549,8 +550,8 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
         }
       }
     });
-    */
-    res.json(failureRes);
+    
+    //res.json(failureRes);
   } else if (sess.username && sess.role == "customer") {
     res.json({
       message: "You must be an admin to perform this action"
