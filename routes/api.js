@@ -39,7 +39,9 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
     return;
   }
 
+  utility.logMsg("[BeforeConn] '/registerUser' with username " + req.body.username);
   localDB.getConnection(function (err, conn) {
+    utility.logMsg("[AfterConn] '/registerUser' with username " + req.body.username);
     if (err) {
       utility.logMsg(err);
       conn.release();
