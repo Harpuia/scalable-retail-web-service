@@ -17,7 +17,7 @@ var utility = require('../utility/utility');
 
 var sess;
 
-router.post("/registerUser", jsonParser, function (req, res) {
+router.post("/registerUser", jsonParser, function (req, res, next) {
   var fname = req.body.fname;
   var lname = req.body.lname;
   var address = req.body.address;
@@ -40,7 +40,7 @@ router.post("/registerUser", jsonParser, function (req, res) {
   localDB.getConnection(function (err, conn) {
     if (err) {
       conn.release();
-      throw err;
+      next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username);
     conn.query(sql, function (err, result) {
@@ -59,7 +59,9 @@ router.post("/registerUser", jsonParser, function (req, res) {
           mysql.escape(password) + ", " + mysql.escape("customer") + ")";
         conn.query(sql, function (err, result) {
           conn.release();
-          if (err) throw err;
+          if (err) {
+            next(err);
+          }
           var successMessage = fname + " was registered successfully";
           res.json({
             message: successMessage
@@ -71,7 +73,7 @@ router.post("/registerUser", jsonParser, function (req, res) {
   });
 });
 
-router.post("/login", jsonParser, function (req, res) {
+router.post("/login", jsonParser, function (req, res, next) {
   var username = req.body.username;
   var password = req.body.password;
   var failureRes = {
@@ -81,13 +83,13 @@ router.post("/login", jsonParser, function (req, res) {
   localDB.getConnection(function (err, conn) {
     if (err) {
       conn.release();
-      throw err;
+      next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username) + " AND password = " + mysql.escape(password);
     conn.query(sql, function (err, result) {
       conn.release();
       if (err) {
-        throw err;
+        next(err);
       }
 
       if (typeof result !== 'undefined' && result.length > 0) {
@@ -105,12 +107,12 @@ router.post("/login", jsonParser, function (req, res) {
   });
 });
 
-router.post("/logout", function (req, res) {
+router.post("/logout", function (req, res, next) {
   sess = req.session;
   if (sess.username) {
     req.session.destroy(function (err) {
       if (err) {
-        throw err;
+        next(err);
       } else {
         res.json({
           message: "You have been successfully logged out"
@@ -124,7 +126,7 @@ router.post("/logout", function (req, res) {
   }
 });
 
-router.post("/updateInfo", jsonParser, function (req, res) {
+router.post("/updateInfo", jsonParser, function (req, res, next) {
   sess = req.session;
   if (sess.username) {
     var fname = req.body.fname;
@@ -149,7 +151,7 @@ router.post("/updateInfo", jsonParser, function (req, res) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         conn.release();
-        throw err;
+        next(err);
       }
 
       var value_set =
@@ -168,7 +170,7 @@ router.post("/updateInfo", jsonParser, function (req, res) {
         var sql = "UPDATE `users` SET " + value_set + " WHERE username=" + conn.escape(sess.username);
         conn.query(sql, function (err, result) {
           conn.release();
-          if (err) throw err;
+          if (err) next(err);
           var successMessage = fname + " your information was successfully updated";
           res.json({
             message: successMessage
@@ -184,7 +186,7 @@ router.post("/updateInfo", jsonParser, function (req, res) {
   }
 });
 
-router.post("/addProducts", jsonParser, function (req, res) {
+router.post("/addProducts", jsonParser, function (req, res, next) {
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var asin = req.body.asin;
@@ -204,14 +206,14 @@ router.post("/addProducts", jsonParser, function (req, res) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         conn.release();
-        throw err;
+        next(err);
       }
 
       var sql = "SELECT * FROM products WHERE asin = " + mysql.escape(asin);
       conn.query(sql, function (err, result) {
         if (err) {
           conn.release();
-          throw err;
+          next(err);
         }
 
         if (typeof result !== 'undefined' && result.length > 0) {
@@ -222,7 +224,7 @@ router.post("/addProducts", jsonParser, function (req, res) {
             mysql.escape(asin) + ", " + mysql.escape(productName) + ", " + mysql.escape(productDescription) + ", " + mysql.escape(pgroup) + ")";
           conn.query(sql, function (err, result) {
             conn.release();
-            if (err) throw err;
+            if (err) next(err);
             var successMessage = productName + " was successfully added to the system";
             res.json({
               message: successMessage
@@ -243,7 +245,7 @@ router.post("/addProducts", jsonParser, function (req, res) {
   }
 });
 
-router.post("/modifyProduct", jsonParser, function (req, res) {
+router.post("/modifyProduct", jsonParser, function (req, res, next) {
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var asin = req.body.asin;
@@ -263,7 +265,7 @@ router.post("/modifyProduct", jsonParser, function (req, res) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         conn.release();
-        throw err;
+        next(err);
       }
 
       var value_set =
@@ -277,7 +279,7 @@ router.post("/modifyProduct", jsonParser, function (req, res) {
         var sql = "UPDATE `products` SET " + value_set + " WHERE asin=" + conn.escape(asin);
         conn.query(sql, function (err, result) {
           conn.release();
-          if (err) throw err;
+          if (err) next(err);
           var successMessage = productName + " was successfully updated";
           res.json({
             message: successMessage
@@ -296,7 +298,7 @@ router.post("/modifyProduct", jsonParser, function (req, res) {
   }
 });
 
-router.post("/viewUsers", jsonParser, function (req, res) {
+router.post("/viewUsers", jsonParser, function (req, res, next) {
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var firstname = req.body.fname;
@@ -304,7 +306,7 @@ router.post("/viewUsers", jsonParser, function (req, res) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         conn.release();
-        throw err;
+        next(err);
       }
 
       var sql = "SELECT * FROM users WHERE fname LIKE ";
@@ -325,7 +327,7 @@ router.post("/viewUsers", jsonParser, function (req, res) {
 
       conn.query(sql, function (err, result) {
         conn.release();
-        if (err) throw err;
+        if (err) next(err);
         if (typeof result !== 'undefined' && result.length > 0) {
           var users = [];
           for (var i = 0; i < result.length; i++) {
@@ -363,7 +365,7 @@ router.post("/viewUsers", jsonParser, function (req, res) {
   }
 });
 
-router.post("/viewProducts", jsonParser, function (req, res) {
+router.post("/viewProducts", jsonParser, function (req, res, next) {
   var asin = req.body.asin;
   var keyword = req.body.keyword;
   var pgroup = req.body.group;
@@ -385,7 +387,7 @@ router.post("/viewProducts", jsonParser, function (req, res) {
   localDB.getConnection(function (err, conn) {
     if (err) {
       conn.release();
-      throw err;
+      next(err);
     }
 
     if (typeof asin != 'undefined' && asin != "") {
@@ -470,7 +472,7 @@ router.post("/viewProducts", jsonParser, function (req, res) {
   });
 });
 
-router.post("/buyProducts", jsonParser, function (req, res) {
+router.post("/buyProducts", jsonParser, function (req, res, next) {
   var failureRes = {
     message: "There are no products that match that criteria"
   };
@@ -511,7 +513,7 @@ router.post("/buyProducts", jsonParser, function (req, res) {
   }
 });
 
-router.post("/productsPurchased", jsonParser, function (req, res) {
+router.post("/productsPurchased", jsonParser, function (req, res, next) {
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var failureRes = {
@@ -563,7 +565,7 @@ router.post("/productsPurchased", jsonParser, function (req, res) {
   }
 });
 
-router.post("/getRecommendations", jsonParser, function(req, res) {
+router.post("/getRecommendations", jsonParser, function(req, res, next) {
   sess = req.session;
   if(sess.username) {
     res.json({
