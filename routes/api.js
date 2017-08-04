@@ -17,6 +17,7 @@ var model = require('../models/model');
 var utility = require('../utility/utility');
 
 var auroraOptions = {
+  connectionLimit: 10000,
   host: "ediss-aurora.cluster-cektrjgecscm.us-east-1.rds.amazonaws.com",
   user: "root",
   port: 3306,

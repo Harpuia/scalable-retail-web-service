@@ -24,6 +24,7 @@ var localOptions = {
 
 var awsOptions = {
   // When using MySQL instance deployed on AWS RDS service.
+  connectionLimit: 10000,
   host: "ediss-db.cektrjgecscm.us-east-1.rds.amazonaws.com",
   user: "root",
   port: 3306,
@@ -43,6 +44,7 @@ var awsOptions = {
 };
 
 var auroraOptions = {
+  connectionLimit: 10000,
   host: "ediss-aurora.cluster-cektrjgecscm.us-east-1.rds.amazonaws.com",
   user: "root",
   port: 3306,
