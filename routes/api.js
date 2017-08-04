@@ -123,12 +123,13 @@ router.post("/logout", function (req, res, next) {
   utility.logMsg("[Enter] '/logout' with username " + req.session.username);
   sess = req.session;
   if (sess.username) {
+    var username = sess.username;
     req.session.destroy(function (err) {
       if (err) {
         utility.logMsg(err);
         next(err);
       } else {
-        utility.logMsg("[Success] '/logout' with username " + req.session.username);
+        utility.logMsg("[Success] '/logout' with username " + username);
         res.json({
           message: "You have been successfully logged out"
         });
