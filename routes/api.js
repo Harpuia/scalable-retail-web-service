@@ -13,8 +13,19 @@ var client = redis.createClient();
 var model = require('../models/model');
 //var localDB = model.localConnection;
 //var localDB = model.awsConnection;
-var localDB = model.auroraConnection;
+//var localDB = model.auroraConnection;
 var utility = require('../utility/utility');
+
+var auroraOptions = {
+  host: "ediss-aurora.cluster-cektrjgecscm.us-east-1.rds.amazonaws.com",
+  user: "root",
+  port: 3306,
+  password: "ediss_is_awesome",
+  database: "e_commerce"
+};
+
+var auroraConnection = mysql.createPool(auroraOptions);
+var localDB = auroraConnection;
 
 var sess;
 
