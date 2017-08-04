@@ -7,7 +7,7 @@
 		"phases": [
 			{
 				"duration": 180,
-				"arrivalCount": 100
+				"arrivalCount": 1
 			}
 		],
 		"payload": [
