@@ -14,6 +14,7 @@ var sql_set_value = function (conn, field, content) {
 var insertOrder = function (session, products, fn) {
   localDB.getConnection(function (err, conn) {
     if (err) {
+      console.log(err);
       conn.release();
       return;
     }
@@ -97,6 +98,7 @@ var insertRecommendation = function (products, fn) {
 var getProductsPurchased = function(username, fn) {
   localDB.getConnection(function(err, conn) {
     if(err) {
+      console.log(err);
       conn.release();
       return;
     }
@@ -119,7 +121,8 @@ var getProductsPurchased = function(username, fn) {
 var getRecommendations = function(asin, fn) {
     poolRead.getConnection(function (err, connection) {
         if (err) {
-            connection.release();
+          console.log(err);  
+          connection.release();
             return;
         }
         connection.query("select name from product_table p join (select alsobought from recom where bought ='" + asin + "' group by alsobought order by count(*) desc limit 5) as r on p.asin=r.alsobought;",

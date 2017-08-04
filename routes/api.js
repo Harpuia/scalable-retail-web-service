@@ -39,12 +39,14 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
 
   localDB.getConnection(function (err, conn) {
     if (err) {
+      console.log(err);
       conn.release();
       next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username);
     conn.query(sql, function (err, result) {
       if (err) {
+        console.log(err);
         conn.release();
         next(err);
       }
@@ -60,6 +62,7 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
         conn.query(sql, function (err, result) {
           conn.release();
           if (err) {
+            console.log(err);
             next(err);
           }
           var successMessage = fname + " was registered successfully";
@@ -82,6 +85,7 @@ router.post("/login", jsonParser, function (req, res, next) {
 
   localDB.getConnection(function (err, conn) {
     if (err) {
+      console.log(err);
       conn.release();
       next(err);
     }
@@ -89,6 +93,7 @@ router.post("/login", jsonParser, function (req, res, next) {
     conn.query(sql, function (err, result) {
       conn.release();
       if (err) {
+        console.log(err);
         next(err);
       }
 
@@ -112,6 +117,7 @@ router.post("/logout", function (req, res, next) {
   if (sess.username) {
     req.session.destroy(function (err) {
       if (err) {
+        console.log(err);
         next(err);
       } else {
         res.json({
@@ -150,6 +156,7 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
 
     localDB.getConnection(function (err, conn) {
       if (err) {
+        console.log(err);
         conn.release();
         next(err);
       }
@@ -170,7 +177,10 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
         var sql = "UPDATE `users` SET " + value_set + " WHERE username=" + conn.escape(sess.username);
         conn.query(sql, function (err, result) {
           conn.release();
-          if (err) next(err);
+          if (err) {
+            console.log(err);
+            next(err);
+          }
           var successMessage = fname + " your information was successfully updated";
           res.json({
             message: successMessage
@@ -205,6 +215,7 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
 
     localDB.getConnection(function (err, conn) {
       if (err) {
+        console.log(err);
         conn.release();
         next(err);
       }
@@ -212,6 +223,7 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
       var sql = "SELECT * FROM products WHERE asin = " + mysql.escape(asin);
       conn.query(sql, function (err, result) {
         if (err) {
+          console.log(err);
           conn.release();
           next(err);
         }
@@ -224,7 +236,10 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
             mysql.escape(asin) + ", " + mysql.escape(productName) + ", " + mysql.escape(productDescription) + ", " + mysql.escape(pgroup) + ")";
           conn.query(sql, function (err, result) {
             conn.release();
-            if (err) next(err);
+            if (err) {
+              console.log(err);
+              next(err);
+            }
             var successMessage = productName + " was successfully added to the system";
             res.json({
               message: successMessage
@@ -264,6 +279,7 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
 
     localDB.getConnection(function (err, conn) {
       if (err) {
+        console.log(err);
         conn.release();
         next(err);
       }
@@ -279,7 +295,10 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
         var sql = "UPDATE `products` SET " + value_set + " WHERE asin=" + conn.escape(asin);
         conn.query(sql, function (err, result) {
           conn.release();
-          if (err) next(err);
+          if (err) {
+            console.log(err);
+            next(err);
+          }
           var successMessage = productName + " was successfully updated";
           res.json({
             message: successMessage
@@ -305,6 +324,7 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
     var lastname = req.body.lname;
     localDB.getConnection(function (err, conn) {
       if (err) {
+        console.log(err);
         conn.release();
         next(err);
       }
@@ -327,7 +347,10 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
 
       conn.query(sql, function (err, result) {
         conn.release();
-        if (err) next(err);
+        if (err) {
+          console.log(err);
+          next(err);
+        }
         if (typeof result !== 'undefined' && result.length > 0) {
           var users = [];
           for (var i = 0; i < result.length; i++) {
@@ -386,18 +409,21 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
 
   localDB.getConnection(function (err, conn) {
     if (err) {
+      console.log(err);
       conn.release();
       next(err);
     }
 
     if (typeof asin != 'undefined' && asin != "") {
-      var query = "SELECT * FROM products WHERE asin = '" + asin + "'";
+      var query = "SELECT asin, productName FROM products WHERE asin = '" + asin + "'";
       conn.query(query, function (err, result) {
         conn.release();
         if (err) {
           //throw (err);
-          console.log(sql);
-          res.send(err.message);
+          //console.log(sql);
+          //res.send(err.message);
+          console.log(err);
+          next(err);
         } else {
           if (typeof result !== 'undefined' && result.length > 0) {
             var products = [];
