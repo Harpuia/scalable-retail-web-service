@@ -6,7 +6,7 @@
 		},
 		"phases": [
 			{
-				"duration": 180,
+				"duration": 10,
 				"arrivalCount": 1
 			}
 		],
