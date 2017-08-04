@@ -42,8 +42,17 @@ var awsOptions = {
   */
 };
 
+var auroraOptions = {
+  host: "ediss-aurora.cluster-cektrjgecscm.us-east-1.rds.amazonaws.com",
+  user: "root",
+  port: 3306,
+  password: "ediss_is_awesome",
+  database: "e_commerce"
+}
+
 var localConnection = mysql.createPool(localOptions);
 var awsConnection = mysql.createPool(awsOptions);
+var auroraConnection = mysql.createPool(auroraOptions);
 //var localSession = new MySQLStore(localOptions, localConnection);
 //var awsSession = new MySQLStore(awsOptions, awsConnection);
 
