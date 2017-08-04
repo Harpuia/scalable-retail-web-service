@@ -18,6 +18,7 @@ var utility = require('../utility/utility');
 var sess;
 
 router.post("/registerUser", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/registerUser' with username " + req.body.username);
   var fname = req.body.fname;
   var lname = req.body.lname;
   var address = req.body.address;
@@ -33,26 +34,28 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
   };
 
   if (!(fname && lname && address && city && state && zip && email && username && password)) {
+    utility.logMsg("[Fail] '/registerUser' with username " + username);
     res.json(failureRes);
     return;
   }
 
   localDB.getConnection(function (err, conn) {
     if (err) {
-      console.log(err);
+      utility.logMsg(err);
       conn.release();
       next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username);
     conn.query(sql, function (err, result) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         conn.release();
         next(err);
       }
 
       if (typeof result !== 'undefined' && result.length > 0) {
         conn.release();
+        utility.logMsg("[Fail] '/registerUser' with username " + username);
         res.json(failureRes);
       } else {
         sql = "INSERT INTO `users` (`fname`, `lname`, `address`, `city`, `state`, `zip`, `email`, `username`, `password`, `role`) VALUES (" +
@@ -62,10 +65,11 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
         conn.query(sql, function (err, result) {
           conn.release();
           if (err) {
-            console.log(err);
+            utility.logMsg(err);
             next(err);
           }
           var successMessage = fname + " was registered successfully";
+          utility.logMsg("[Success] '/registerUser' with username " + username);
           res.json({
             message: successMessage
           });
@@ -77,6 +81,7 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
 });
 
 router.post("/login", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/login' with username " + req.body.username);
   var username = req.body.username;
   var password = req.body.password;
   var failureRes = {
@@ -85,7 +90,7 @@ router.post("/login", jsonParser, function (req, res, next) {
 
   localDB.getConnection(function (err, conn) {
     if (err) {
-      console.log(err);
+      utility.logMsg(err);
       conn.release();
       next(err);
     }
@@ -93,7 +98,7 @@ router.post("/login", jsonParser, function (req, res, next) {
     conn.query(sql, function (err, result) {
       conn.release();
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         next(err);
       }
 
@@ -102,10 +107,12 @@ router.post("/login", jsonParser, function (req, res, next) {
         sess = req.session;
         sess.username = req.body.username;
         sess.role = result[0].role;
+        utility.logMsg("[Success] '/login' with username " + username);
         res.json({
           message: welcomeMessage
         });
       } else {
+        utility.logMsg("[Fail] '/login' with username " + username);
         res.json(failureRes);
       }
     });
@@ -113,19 +120,22 @@ router.post("/login", jsonParser, function (req, res, next) {
 });
 
 router.post("/logout", function (req, res, next) {
+  utility.logMsg("[Enter] '/logout' with username " + req.session.username);
   sess = req.session;
   if (sess.username) {
     req.session.destroy(function (err) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         next(err);
       } else {
+        utility.logMsg("[Success] '/logout' with username " + req.session.username);
         res.json({
           message: "You have been successfully logged out"
         });
       }
     });
   } else {
+    utility.logMsg("[Fail] '/logout' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -133,6 +143,7 @@ router.post("/logout", function (req, res, next) {
 });
 
 router.post("/updateInfo", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/updateInfo' with username " + req.session.username);
   sess = req.session;
   if (sess.username) {
     var fname = req.body.fname;
@@ -150,13 +161,14 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
     };
 
     if (fname === "" || lname === "" || address === "" || city === "" || state === "" || zip === "" || email === "" || username === "" || password === "" || username !== sess.username) {
+      utility.logMsg("[Fail] '/updateInfo' with username " + req.session.username);
       res.json(failureRes);
       return;
     }
 
     localDB.getConnection(function (err, conn) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         conn.release();
         next(err);
       }
@@ -178,10 +190,11 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
         conn.query(sql, function (err, result) {
           conn.release();
           if (err) {
-            console.log(err);
+            utility.logMsg(err);
             next(err);
           }
           var successMessage = fname + " your information was successfully updated";
+          utility.logMsg("[Success] '/updateInfo' with username " + req.session.username);
           res.json({
             message: successMessage
           });
@@ -190,6 +203,7 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
     });
 
   } else {
+    utility.logMsg("[Fail] '/updateInfo' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -197,6 +211,7 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
 });
 
 router.post("/addProducts", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/addProducts' with username " + req.session.username);
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var asin = req.body.asin;
@@ -209,13 +224,14 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
     };
 
     if (!(asin && productName && productDescription && pgroup)) {
+      utility.logMsg("[Fail] '/addProducts' with username " + req.session.username);
       res.json(failureRes);
       return;
     }
 
     localDB.getConnection(function (err, conn) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         conn.release();
         next(err);
       }
@@ -223,13 +239,14 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
       var sql = "SELECT * FROM products WHERE asin = " + mysql.escape(asin);
       conn.query(sql, function (err, result) {
         if (err) {
-          console.log(err);
+          utility.logMsg(err);
           conn.release();
           next(err);
         }
 
         if (typeof result !== 'undefined' && result.length > 0) {
           conn.release();
+          utility.logMsg("[Fail] '/addProducts' with username " + req.session.username);
           res.json(failureRes);
         } else {
           sql = "INSERT INTO `products` (`asin`, `productName`, `productDescription`, `pgroup`) VALUES (" +
@@ -237,10 +254,11 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
           conn.query(sql, function (err, result) {
             conn.release();
             if (err) {
-              console.log(err);
+              utility.logMsg(err);
               next(err);
             }
             var successMessage = productName + " was successfully added to the system";
+            utility.logMsg("[Success] '/addProducts' with username " + req.session.username);
             res.json({
               message: successMessage
             });
@@ -250,10 +268,12 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
 
     });
   } else if (sess.username && sess.role == "customer") {
+    utility.logMsg("[Fail] '/addProducts' with username " + req.session.username);
     res.json({
       message: "You must be an admin to perform this action"
     });
   } else {
+    utility.logMsg("[Fail] '/addProducts' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -261,6 +281,7 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
 });
 
 router.post("/modifyProduct", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/modifyProduct' with username " + req.session.username);
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var asin = req.body.asin;
@@ -273,13 +294,14 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
     };
 
     if (!(asin && productName && productDescription && pgroup)) {
+      utility.logMsg("[Fail] '/modifyProduct' with username " + req.session.username);
       res.json(failureRes);
       return;
     }
 
     localDB.getConnection(function (err, conn) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         conn.release();
         next(err);
       }
@@ -296,10 +318,11 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
         conn.query(sql, function (err, result) {
           conn.release();
           if (err) {
-            console.log(err);
+            utility.logMsg(err);
             next(err);
           }
           var successMessage = productName + " was successfully updated";
+          utility.logMsg("[Success] '/modifyProduct' with username " + req.session.username);
           res.json({
             message: successMessage
           });
@@ -307,10 +330,12 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
       }
     });
   } else if (sess.username && sess.role == "customer") {
+    utility.logMsg("[Fail] '/modifyProduct' with username " + req.session.username);
     res.json({
       message: "You must be an admin to perform this action"
     });
   } else {
+    utility.logMsg("[Fail] '/modifyProduct' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -318,13 +343,14 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
 });
 
 router.post("/viewUsers", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/viewUsers' with username " + req.session.username);
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var firstname = req.body.fname;
     var lastname = req.body.lname;
     localDB.getConnection(function (err, conn) {
       if (err) {
-        console.log(err);
+        utility.logMsg(err);
         conn.release();
         next(err);
       }
@@ -348,7 +374,7 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
       conn.query(sql, function (err, result) {
         conn.release();
         if (err) {
-          console.log(err);
+          utility.logMsg(err);
           next(err);
         }
         if (typeof result !== 'undefined' && result.length > 0) {
@@ -364,11 +390,13 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
             };
             users.push(user);
           }
+          utility.logMsg("[Success] '/viewUsers' with username " + req.session.username);
           res.json({
             message: "The action was successful",
             user: users
           });
         } else {
+          utility.logMsg("[Fail] '/viewUsers' with username " + req.session.username);
           res.json({
             message: "There are no users that match that criteria"
           });
@@ -378,10 +406,12 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
 
     });
   } else if (sess.username && sess.role == "customer") {
+    utility.logMsg("[Fail] '/viewUsers' with username " + req.session.username);
     res.json({
       message: "You must be an admin to perform this action"
     });
   } else {
+    utility.logMsg("[Fail] '/viewUsers' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -389,6 +419,7 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
 });
 
 router.post("/viewProducts", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/viewProducts' with asin " + req.body.asin + " keyword " + req.body.keyword + " pgroup " + req.body.group);
   var asin = req.body.asin;
   var keyword = req.body.keyword;
   var pgroup = req.body.group;
@@ -409,7 +440,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
 
   localDB.getConnection(function (err, conn) {
     if (err) {
-      console.log(err);
+      utility.logMsg(err);
       conn.release();
       next(err);
     }
@@ -422,7 +453,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
           //throw (err);
           //console.log(sql);
           //res.send(err.message);
-          console.log(err);
+          utility.logMsg(err);
           next(err);
         } else {
           if (typeof result !== 'undefined' && result.length > 0) {
@@ -436,10 +467,12 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
               };
               products.push(product);
             }
+            utility.logMsg("[Success] '/viewProducts' with asin " + req.body.asin + " keyword " + req.body.keyword + " pgroup " + req.body.group);
             res.json({
               product: products
             });
           } else {
+            utility.logMsg("[Fail] '/viewProducts' with asin " + req.body.asin + " keyword " + req.body.keyword + " pgroup " + req.body.group);
             res.json({
               message: "There are no products that match that criteria"
             });
@@ -480,6 +513,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
       });
       */
       if (typeof keyword == 'undefined' || keyword.length == 0) {
+        utility.logMsg("[Fail] '/viewProducts' with asin " + req.body.asin + " keyword " + req.body.keyword + " pgroup " + req.body.group);
         res.json({
           message: "There are no products that match that criteria"
         });
@@ -490,6 +524,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
           productName: keyword
         };
         products.push(product);
+        utility.logMsg("[Success] '/viewProducts' with asin " + req.body.asin + " keyword " + req.body.keyword + " pgroup " + req.body.group);
         res.json({
           product: products
         });
@@ -499,6 +534,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
 });
 
 router.post("/buyProducts", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/buyProducts' with username " + req.session.username);
   var failureRes = {
     message: "There are no products that match that criteria"
   };
@@ -508,12 +544,14 @@ router.post("/buyProducts", jsonParser, function (req, res, next) {
     var products = req.body.products;
 
     if (!products) {
+      utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
       res.json(failureRes);
       return;
     }
 
     utility.insertOrder(sess, req.body.products, function (err, data) {
       if (err) {
+        utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
         res.json(failureRes);
       } else {
         /*
@@ -527,12 +565,14 @@ router.post("/buyProducts", jsonParser, function (req, res, next) {
           }
         });
         */
+        utility.logMsg("[Success] '/buyProducts' with username " + req.session.username);
         res.json({
           message: "The action was successful"
         });
       }
     });
   } else {
+    utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -540,6 +580,7 @@ router.post("/buyProducts", jsonParser, function (req, res, next) {
 });
 
 router.post("/productsPurchased", jsonParser, function (req, res, next) {
+  utility.logMsg("[Enter] '/productsPurchased' with username " + req.session.username);
   sess = req.session;
   if (sess.username && sess.role == "admin") {
     var failureRes = {
@@ -548,6 +589,7 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
 
     var username = req.body.username;
     if (!username) {
+      utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
       res.json(failureRes);
       return;
     }
@@ -555,6 +597,7 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
     
     utility.getProductsPurchased(username, function (err, result) {
       if (err) {
+        utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
         res.json(failureRes);
       } else {
         if (typeof result !== 'undefined' && result.length > 0) {
@@ -569,11 +612,13 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
             };
             retProducts.push(product);
           }
+          utility.logMsg("[Success] '/buyProducts' with username " + req.session.username);
           res.json({
             message: "The action was successful",
             products: retProducts
           })
         } else {
+          utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
           res.json(failureRes);
         }
       }
@@ -581,10 +626,12 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
     
     //res.json(failureRes);
   } else if (sess.username && sess.role == "customer") {
+    utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
     res.json({
       message: "You must be an admin to perform this action"
     });
   } else {
+    utility.logMsg("[Fail] '/buyProducts' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });
@@ -592,12 +639,15 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
 });
 
 router.post("/getRecommendations", jsonParser, function(req, res, next) {
+  utility.logMsg("[Enter] '/getRecommendations' with username " + req.session.username);
   sess = req.session;
   if(sess.username) {
+    utility.logMsg("[Fail] '/getRecommendations' with username " + req.session.username);
     res.json({
       message: "There are no recommendations for that product"
     });
   } else {
+    utility.logMsg("[Fail] '/getRecommendations' with username " + req.session.username);
     res.json({
       message: "You are not currently logged in"
     });

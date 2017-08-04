@@ -3,6 +3,10 @@ var model = require('../models/model');
 //var localDB = model.localConnection;
 var localDB = model.awsConnection;
 
+var logMsg = function(msg) {
+  console.log(msg);
+}
+
 var sql_set_value = function (conn, field, content) {
   if (content) {
     return "`" + field + "`=" + conn.escape(content);
@@ -145,5 +149,6 @@ module.exports = {
   insertOrder: insertOrder,
   insertRecommendation: insertRecommendation,
   getProductsPurchased: getProductsPurchased,
-  getRecommendations: getRecommendations
+  getRecommendations: getRecommendations,
+  logMsg: logMsg
 };
