@@ -30,6 +30,7 @@ var awsOptions = {
   port: 3306,
   password: "ediss_is_awesome",
   database: "e_commerce",
+  waitForConnections: "false"
   /*
   createDatabaseTable: true,
   schema: {
