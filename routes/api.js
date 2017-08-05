@@ -620,8 +620,8 @@ router.post("/productsPurchased", jsonParser, function (req, res, next) {
           var retProducts = [];
           for (var i = 0; i < result.length; i++) {
             var resultProductName = result[i].productName;
-            //var resultQuantity = result[i].quantity;
-            var resultQuantity = 3;
+            var resultQuantity = result[i].quantity;
+            //var resultQuantity = 3;
             var product = {
               productName: resultProductName,
               quantity: resultQuantity
