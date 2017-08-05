@@ -57,7 +57,7 @@ router.post("/registerUser", jsonParser, function (req, res, next) {
     utility.logMsg("[AfterConn] '/registerUser' with username " + req.body.username);
     if (err) {
       utility.logMsg(err);
-      conn.release();
+      //conn.release();
       next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username);
@@ -106,7 +106,7 @@ router.post("/login", jsonParser, function (req, res, next) {
   localDB.getConnection(function (err, conn) {
     if (err) {
       utility.logMsg(err);
-      conn.release();
+      //conn.release();
       next(err);
     }
     var sql = "SELECT * FROM users WHERE username = " + mysql.escape(username) + " AND password = " + mysql.escape(password);
@@ -185,7 +185,7 @@ router.post("/updateInfo", jsonParser, function (req, res, next) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         utility.logMsg(err);
-        conn.release();
+        //conn.release();
         next(err);
       }
 
@@ -248,7 +248,7 @@ router.post("/addProducts", jsonParser, function (req, res, next) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         utility.logMsg(err);
-        conn.release();
+        //conn.release();
         next(err);
       }
 
@@ -318,7 +318,7 @@ router.post("/modifyProduct", jsonParser, function (req, res, next) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         utility.logMsg(err);
-        conn.release();
+        //conn.release();
         next(err);
       }
 
@@ -367,7 +367,7 @@ router.post("/viewUsers", jsonParser, function (req, res, next) {
     localDB.getConnection(function (err, conn) {
       if (err) {
         utility.logMsg(err);
-        conn.release();
+        //conn.release();
         next(err);
       }
 
@@ -457,7 +457,7 @@ router.post("/viewProducts", jsonParser, function (req, res, next) {
   localDB.getConnection(function (err, conn) {
     if (err) {
       utility.logMsg(err);
-      conn.release();
+      //conn.release();
       next(err);
     }
 
