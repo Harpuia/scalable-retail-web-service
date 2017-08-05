@@ -12,7 +12,7 @@ var redisStore = require('connect-redis')(session);
 var client = redis.createClient();
 var model = require('../models/model');
 //var localDB = model.localConnection;
-//var localDB = model.awsConnection;
+var localDB = model.awsConnection;
 //var localDB = model.auroraConnection;
 var utility = require('../utility/utility');
 
@@ -25,8 +25,8 @@ var auroraOptions = {
   database: "e_commerce"
 };
 
-var auroraConnection = mysql.createPool(auroraOptions);
-var localDB = auroraConnection;
+//var auroraConnection = mysql.createPool(auroraOptions);
+//var localDB = auroraConnection;
 
 var sess;
 

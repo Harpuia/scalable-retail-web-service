@@ -1,8 +1,8 @@
 var mysql = require('mysql');
 var model = require('../models/model');
 //var localDB = model.localConnection;
-//var localDB = model.awsConnection;
-var localDB = model.auroraConnection;
+var localDB = model.awsConnection;
+//var localDB = model.auroraConnection;
 
 var logMsg = function(msg) {
   console.log(msg);
